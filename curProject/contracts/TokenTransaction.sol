@@ -79,12 +79,12 @@ contract TransactionFactory {
 contract TokenTransaction is TransactionFactory {
 
     address public owner;
-    TransactionFactory database;
     // Log the transfer/action to blockchain 
     event Sold(address buyer, address seller, uint256 enitAmount, uint256 etherAmount);
     event Brought(address buyer, address seller, uint256 enitAmount, uint256 etherAmount);
     event Transferred(address _from, address _to, uint256 value);
     event Deposit(address sender, uint256 buyer);
+    event BadAction(address buyer, uint256 amountHave, uint256 amountCost);
     uint256 ratioEtherToEnits = 3460;
 
     /* Purpose: creates the instance 
@@ -93,7 +93,6 @@ contract TokenTransaction is TransactionFactory {
      */
     function TokenTransaction() TransactionFactory() public {
         owner = msg.sender;
-        database = TransactionFactory(msg.sender); //factory will always be owner
     }
 
     /* Purpose: converts depending on boolean:
@@ -116,46 +115,78 @@ contract TokenTransaction is TransactionFactory {
      */
     // might have an error here 
     function depositEnits(bytes32 name, uint256 value) public {
-        database.setBalance(getAddress(name), value, true);
+        setBalance(getAddress(name), value, true);
         Deposit(getAddress(name), value);
     }
     /* Purpose: transfers ether to seller and enit to buyer
      * Input: string_seller, uint256_amount 
      * Returns: bool
      */
-    function transfer(bytes32 buyer, bytes32 seller, uint256 amount) payable public returns(bool) {
+    function transferEnergy(bytes32 buyer, bytes32 seller, uint256 amount) payable public returns(bool) {
         // not enough enits to give out
-        if ( database.getBalance(seller) < amount) { 
+        if ( getBalance(seller) < amount) { 
             return false;
         }
         
-        // sending and receiving the enits 
-        database.setBalance(database.getAddress(seller), amount, false);
-        depositEnits(seller,amount);
+        // sending and receiving the enits
+        // deleting seller's energy amount and increasing buyer's amount 
+        setBalance(getAddress(seller), amount, false);
+        depositEnits(buyer, amount);
 
-        //payable function 
-        database.getAddress(seller).transfer(convertToken(false, amount));
-        Transferred(getAddress(buyer), database.getAddress(seller), amount);
+        //payable function - I want to send ethers to seller from buyers
+        getAddress(seller).transfer(convertToken(false, amount));
+        Transferred(getAddress(buyer), getAddress(seller), amount);
         return true; 
     }
 
     /* Purpose: exchange money or a handshake here 
-                checks if owner has ethers to use
+                buyer wants to buy energy from seller
      * Input: seller, buyer, amount 
      * Returns: bool
      */
     function exchange(bytes32 _buyer, bytes32 _seller, uint amount) public returns(bool) {
-        var seller = database.getAddress(_seller);
+        var seller = getAddress(_seller);
         var buyer = getAddress(_buyer);
         uint256 currentCost = convertToken(false, amount);
+        Sold(buyer, seller, amount, currentCost); //give me the event log of this event
 
-        if ( msg.sender.balance < currentCost) {
+        if ( buyer.balance < currentCost) {
+            BadAction(buyer, buyer.balance, currentCost);
             return false;
         }
-        transfer(_buyer, _seller, amount) ; 
+        
+        transferEnergy(_buyer, _seller, amount); 
         Brought(buyer, seller, amount, currentCost);
         return true;
     }
+
+    function exchange1(bytes32 _buyer, bytes32 _seller, uint amount) public returns(bool) {
+        var seller = getAddress(_seller);
+        var buyer = getAddress(_buyer);
+        uint256 currentCost = convertToken(false, amount);
+        Sold(buyer, seller, amount, currentCost); //give me the event log of this event
+        
+        transferEnergy1(_buyer, _seller, amount); 
+        Brought(buyer, seller, amount, currentCost);
+        return true;
+    }
+    function transferEnergy1(bytes32 buyer, bytes32 seller, uint256 amount) public returns(bool) {
+        // not enough enits to give out
+        if ( getBalance(seller) < amount) { 
+            return false;
+        }
+        
+        // sending and receiving the enits
+        // deleting seller's energy amount and increasing buyer's amount 
+        setBalance(getAddress(seller), amount, false);
+        depositEnits(buyer, amount);
+
+        //payable function - I want to send ethers to seller from buyers
+        // getAddress(seller).transfer(convertToken(false, amount));
+        Transferred(getAddress(buyer), getAddress(seller), amount);
+        return true; 
+    }    
+    
     /* <function> remove()
     * Purpose: Makes the contract remove itself from the blockchain.
     * Parameters: None.
