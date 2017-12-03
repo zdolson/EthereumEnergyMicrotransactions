@@ -6,7 +6,13 @@ module.exports = {
       host: "localhost",
       port: 8545,
       network_id: "*",
-      gas: 100000
+      gas : 4712388
+    },
+    solc :{
+      optimizer: {
+        enabled: true,
+        runs: 200
+      }
     }
   }
 };
