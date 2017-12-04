@@ -1,5 +1,9 @@
 pragma solidity ^0.4.4;
-
+/* This smart contract was originally for sprint 2 as a test to understand 
+ * how smart contract works. It is not in use anymore but it is here 
+ * as documentation now. Shows us how much we don't know about blockchaining 
+ * and the technologies around it.
+ */ 
 contract TestBank {
 
 	address owner;

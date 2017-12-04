@@ -1,0 +1,3 @@
+Disclaimer: these test cases are only for the smart contract. There is no real way to test the DAPP one on the terminal besides going directly to parity and interacting from there. If there is a way, we are just not at that point right now. 
+
+The results or outcomes of the test cases will only show checkmarks to show that they went through the system fine. They don't produce any outputs as this particular Javascript is harder to use than your standard one. 
