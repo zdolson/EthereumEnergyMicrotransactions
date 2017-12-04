@@ -68,7 +68,7 @@ contract TransactionFactory {
      * returns: bool
      */ 
     function isRegistered(bytes32 userName) public constant returns(bool registered) {
-        if (Accounts[userName].registered){
+        if (Accounts[userName].registered) {
             return true; 
         } else {
             return false;
@@ -84,7 +84,7 @@ contract TokenTransaction is TransactionFactory {
     event Brought(address buyer, address seller, uint256 enitAmount, uint256 etherAmount);
     event Transferred(address _from, address _to, uint256 value);
     event Deposit(address sender, uint256 buyer);
-    event BadAction(address buyer, uint256 amountHave, uint256 amountCost);
+    event BadAction(address buyer, address otherBuyer, uint256 amountCost);
     uint256 ratioEtherToEnits = 3460;
 
     /* Purpose: creates the instance 
@@ -122,20 +122,8 @@ contract TokenTransaction is TransactionFactory {
      * Input: string_seller, uint256_amount 
      * Returns: bool
      */
-    function transferEnergy(bytes32 buyer, bytes32 seller, uint256 amount) payable public returns(bool) {
-        // not enough enits to give out
-        if ( getBalance(seller) < amount) { 
-            return false;
-        }
-        
-        // sending and receiving the enits
-        // deleting seller's energy amount and increasing buyer's amount 
-        setBalance(getAddress(seller), amount, false);
-        depositEnits(buyer, amount);
-
-        //payable function - I want to send ethers to seller from buyers
-        getAddress(seller).transfer(convertToken(false, amount));
-        Transferred(getAddress(buyer), getAddress(seller), amount);
+    function transferEnergy(uint256 amount) payable public returns(bool) {
+        (msg.sender).transfer(amount);
         return true; 
     }
 
@@ -147,16 +135,21 @@ contract TokenTransaction is TransactionFactory {
     function exchange(bytes32 _buyer, bytes32 _seller, uint amount) public returns(bool) {
         var seller = getAddress(_seller);
         var buyer = getAddress(_buyer);
-        uint256 currentCost = convertToken(false, amount);
-        Sold(buyer, seller, amount, currentCost); //give me the event log of this event
-
-        if ( buyer.balance < currentCost) {
-            BadAction(buyer, buyer.balance, currentCost);
+        uint256 currentCost = convertToken(false, amount);  
+        if (getBalance(_seller) < amount) { 
+            return false ;
+        }      
+        if (buyer.balance < currentCost) { 
+            return false ;
+        }
+        if (msg.sender != buyer) { 
             return false;
         }
-        
-        transferEnergy(_buyer, _seller, amount); 
+
+
+        transferEnergy(currentCost, {from: buyer, to: seller}); 
         Brought(buyer, seller, amount, currentCost);
+        Transferred(buyer, seller, currentCost);
         return true;
     }
 
