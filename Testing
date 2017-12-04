@@ -1,5 +1,9 @@
 Test cases documentation 
 
+Testerbank.js - was created by both Nicholas and Kevin, it just uses the eth library 
+to transfer and send tokens into a few accounts. This was a mixed of javascript functions 
+to do a mini testing on understanding how web3 and eth libraries played in it.
+
 For testbank.js, the contributors are Kevin and Nicholas where they mainly worked 
 with TransactionFactory and its respective functions. The numbers or equivalence 
 classes decided on are rather simple to make sure the setters and getters functions 
