@@ -1,5 +1,3 @@
-pragma solidity ^0.4.4;
-
 contract('TestBank', function(accounts) {
 
 	//Testing of a simple query call to get the balance from an account.

@@ -1,5 +1,9 @@
 Test cases documentation 
 
+Testerbank.js - was created by both Nicholas and Kevin, it just uses the eth library 
+to transfer and send tokens into a few accounts. This was a mixed of javascript functions 
+to do a mini testing on understanding how web3 and eth libraries played in it.
+
 For testbank.js, the contributors are Kevin and Nicholas where they mainly worked 
 with TransactionFactory and its respective functions. The numbers or equivalence 
 classes decided on are rather simple to make sure the setters and getters functions 
@@ -14,3 +18,10 @@ The numbers in the list are for testing purpose to see if TokenTransaction
 inherited all of the functions/values from TransactionFactory. The deposit and 
 transferEnergy are for the purpose of seeing if Enits and Ethers could be 
 converted to each other for sales.
+
+
+Under considerations, these test cases are only for the smart contract and not 
+the DAPP file as there's no possible way of getting that to work. The assumption is 
+if the smart contract is giving no errors then the DAPP should work 
+perfectly fine unless the React language has some hidden complication that was not 
+known ahead of time.
