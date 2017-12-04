@@ -1,0 +1,16 @@
+Test cases documentation 
+
+For testbank.js, the contributors are Kevin and Nicholas where they mainly worked 
+with TransactionFactory and its respective functions. The numbers or equivalence 
+classes decided on are rather simple to make sure the setters and getters functions 
+are working with each individual accounts. They mainly range from [0, 10, 100, -100].
+
+For test.js, the contributors are David and Zack. Zack also worked on 
+the module, TransactionFactory, and its respective functions as well. This 
+is mainly due to the fact there was last minute changes on TokenTransaction 
+which rendered all test cases useless. For David, he tested on some close 
+numbers like [10, 15, 20, 3460, 1] and one extremely large number for the heck of it.
+The numbers in the list are for testing purpose to see if TokenTransaction 
+inherited all of the functions/values from TransactionFactory. The deposit and 
+transferEnergy are for the purpose of seeing if Enits and Ethers could be 
+converted to each other for sales.
