@@ -23,7 +23,7 @@ contract('trans', function(accounts) {
             console.log(balance);
             console.log("done");
         }).then(function() { 
-            require(instance.getBalance("David") > instance.getBalance("Nick"));  
+            requires(instance.getBalance("David") > instance.getBalance("Nick"));  
         });
         // action.then(function(instance) { instance.isRegistered("kevin").then(console.log).then(console.log("checked"));});
   });
@@ -34,12 +34,12 @@ contract('trans', function(accounts) {
       }).then(function() { 
         instance.depositEnits("David", 10)
         instance.depositEnits("Nick", 20)
-        require(instance.getBalance("David") == 10)
-        require(instance.getBalance("Nick") == 20)
+        requires(instance.getBalance("David") == 10)
+        requires(instance.getBalance("Nick") == 20)
       }).then(function() {
           instance.transferEnergy1("David", "Nick", 5)
-          require(getBalance("David") == 15).log();
-          require(getBalance("Nick") < 43298402938);
+          requires(getBalance("David") == 15).log();
+          requires(getBalance("Nick") < 43298402938);
       });
   });
   it("done YEAH", function async() {
