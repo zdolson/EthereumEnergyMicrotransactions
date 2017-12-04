@@ -1,14 +1,11 @@
 pragma solidity ^0.4.18;
 
-/* Alright, 4th change in the entire program, this time the database will only have the mappings 
- * and the ability to register users onto the database, however, it will not create new contracts
- */
-
-// the workaround plan for parity is that this database will only hold the mappings
+// The workaround plan for parity is that this database will only hold the mappings
 // and nothing else. The functions will be public so that it can only be called at 
 // TokenTransaction and nothing else.
 contract TransactionFactory {
 
+    //Structure/attributes for users, balances, and registration boolean. 
     struct UserAccount {
         address userAddress;
         bytes32 username; 
@@ -17,32 +14,55 @@ contract TransactionFactory {
     }
 
     address owner;
+
+    //Mapping for accounts and names associated with them.
     mapping (bytes32 => UserAccount) public Accounts; 
-    mapping (address => bytes32) public Names; //kind of inefficient but it is what it is
-    // might create a permission mapping to give user some power like sudo
+    mapping (address => bytes32) public Names;
+
     int numberOfUsers = 0;
 
+    // Logs the registration from the action.
     event Registered(bytes32 username, address userAddress);
 
-    /* Purpose: Setting the owner 
-     * Returns: Nothing, just set who is the boss
-    */
+    /* <constructor> TransactionFactory()
+     * Purpose: Setting the owner 
+     * Parameters: None.
+     * Returns: Nothing
+     */
     function TransactionFactory() public {
         owner = msg.sender;
     }
 
+    /* <function> getBalance()
+     * Purpose: returns the balance from an account
+     * Parameters: byte32 username that we want the balance from.
+     * Returns: the balance from that username's account.
+     */
     function getBalance(bytes32 username) public constant returns(uint256) { 
         return (Accounts[username].enitBalance);
     }
 
+    /* <function> getAddress()
+     * Purpose: get the address from a given username
+     * Parameters: username from an account
+     * Returns: the address correlating to that username
+     */
     function getAddress(bytes32 username) public constant returns(address) { 
         return (Accounts[username].userAddress) ; 
     }
+
+    /* <function> getName()
+     * Purpose: get the username from the address given
+     * Parameters: an address
+     * Returns: username correlated to that address. 
+     */
     function getName(address uAddress) public constant returns(bytes32) { 
         return (Names[uAddress]) ; 
     }
-    /* Purpose: creates a new account within the database
-     * Input: unknownAddress, desiredName
+
+    /* <function> register()
+     * Purpose: creates a new account within the database
+     * Parameters: unknownAddress, desiredName
      * Returns: bool
      */
     function register(address uAddress, bytes32 userName) public returns(bool success) {
@@ -56,9 +76,11 @@ contract TransactionFactory {
         Registered(userName, uAddress);
         return true; 
     }
-    /* Purpose: checks if user is registered
-     * Input: username 
-     * returns: bool
+
+    /* <function> isRegistered()
+     * Purpose: checks if user is registered
+     * Parameters: username 
+     * Returns: bool
      */ 
     function isRegistered(bytes32 userName) public constant returns(bool registered) {
         if (Accounts[userName].registered) {
@@ -69,10 +91,14 @@ contract TransactionFactory {
     }
 }
 
+/* <contract> TokenTransaction
+ * Purpose: Uses the mapping inheritted from TransactionFactory to transfer tokens.
+ */
 contract TokenTransaction is TransactionFactory {
 
     address public owner;
-    // Log the transfer/action to blockchain 
+    
+    // These events log the transfer/action to blockchain 
     event Sold(address buyer, address seller, uint256 enitAmount, uint256 etherAmount);
     event Bought(address buyer, address seller, uint256 enitAmount, uint256 etherAmount);
     event Transferred(address _from, address _to, uint256 value);
@@ -80,14 +106,23 @@ contract TokenTransaction is TransactionFactory {
     event BadAction(address buyer, address otherBuyer, uint256 amountCost);
     uint256 ratioEtherToEnits = 3460;
 
-    /* Purpose: creates the instance 
-     * Input: None 
+    /* <function> TokenTransaction()
+     * Purpose: creates the instance 
+     * Parameters: None 
      * Returns: None
      */
     function TokenTransaction() TransactionFactory() public {
         owner = msg.sender;
     }
 
+    /* <function> setBalance()
+     * Purpose: Sets the balance of a user depending on username, amount and flag.
+     * Parameters: bool flag:  true adds enit to the balance
+     *                    false subtracts enit from the balance
+     *        _username: uses the username for the account 
+     *        amount: amount to be taken 
+     * Returns: None
+     */
     function setBalance(address _username, uint256 amount, bool flag) private {
         bytes32 username = getName(_username);
         if (flag) {
@@ -97,10 +132,11 @@ contract TokenTransaction is TransactionFactory {
         }
     }
 
-    /* Purpose: converts depending on boolean:
-                False = Enits to Ethers 
-                True = Ethers to Enits 
-     * Input: boolean, uint256
+    /* <function> convertToken()
+     * Purpose: converts depending on boolean:
+     *          False = Enits to Ethers 
+     *          True = Ethers to Enits 
+     * Parameters: boolean, uint256
      * Returns: None
      */
     function convertToken(bool toEnit, uint256 initialAmount) public constant returns(uint256 value){
@@ -111,18 +147,19 @@ contract TokenTransaction is TransactionFactory {
             return (initialAmount / ratioEtherToEnits);
         }
     }
-    /* Purpose: deposit money
-     * Input: uint256
+
+    /* <function> depositEnits()
+     * Purpose: deposit money
+     * Parameters: uint256
      * returns: bool
      */
-    // might have an error here 
     function depositEnits(bytes32 name, uint256 value) public {
         setBalance(getAddress(name), value, true);
         Deposit(getAddress(name), value);
     }
 
     /* Purpose: transfers ether to seller and enit to buyer
-     * Input: string_seller, uint256_amount 
+     * Parameters: string_seller, uint256_amount 
      * Returns: bool
      */
     // function transferEnergy(uint256 amount) payable public returns(bool) {
@@ -132,7 +169,7 @@ contract TokenTransaction is TransactionFactory {
 
     /* Purpose: exchange money or a handshake here 
                 buyer wants to buy energy from seller
-     * Input: seller, buyer, amount 
+     * Parameters: seller, buyer, amount 
      * Returns: bool
      */
     // function exchange(bytes32 _buyer, bytes32 _seller, uint amount) public returns(bool) {
@@ -156,6 +193,14 @@ contract TokenTransaction is TransactionFactory {
     //     return true;
     // }
 
+    /* <function> exchange1()
+     * Purpose: This function is basically the handshake between the buyer and seller. 
+     * Parameters: 
+     *        _buyer: the address of the buyer
+     *        _seller: the address of the seller
+     *        _amount: the amount that is to be transfered.
+     * Returns: bool 
+     */
     function exchange1(bytes32 _buyer, bytes32 _seller, uint amount) private returns(bool) {
         var seller = getAddress(_seller);
         var buyer = getAddress(_buyer);
@@ -166,19 +211,28 @@ contract TokenTransaction is TransactionFactory {
         Bought(buyer, seller, amount, currentCost);
         return true;
     }
+
+    /* <function> transferEnergy1()
+     * Purpose: This function does the actual transfer between the buyer and the seller
+     * Parameters: 
+     *        _buyer: the address of the buyer
+     *        _seller: the address of the seller
+     *        _amount: the amount that is to be transfered. 
+     * Return: bool
+     */
     function transferEnergy1(bytes32 buyer, bytes32 seller, uint256 amount) public returns(bool) {
-        // not enough enits to give out
+        // Not enough enits to give out
         if ( getBalance(seller) < amount) { 
             return false;
         }
         
-        // sending and receiving the enits
-        // deleting seller's energy amount and increasing buyer's amount 
+        // Sending and receiving the enits
+        // Deleting seller's energy amount and increasing buyer's amount 
         setBalance(getAddress(seller), amount, false);
         depositEnits(buyer, amount);
 
-        //payable function - I want to send ethers to seller from buyers
-        // getAddress(seller).transfer(convertToken(false, amount));
+        // Payable function - I want to send ethers to seller from buyers
+        // GetAddress(seller).transfer(convertToken(false, amount));
         Transferred(getAddress(buyer), getAddress(seller), amount);
         return true; 
     }    
