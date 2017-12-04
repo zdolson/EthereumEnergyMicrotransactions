@@ -4,7 +4,6 @@ import {Bond, TimeBond} from 'oo7';
 import {Rspan} from 'oo7-react';
 import {InputBond, HashBond, BButton, TransactButton, TransactionProgressLabel} from 'parity-reactive-ui';
 
-
 /* Constant Variable: EEEabi
  * Purpose: Used when creating a contract bonds object.
  */
