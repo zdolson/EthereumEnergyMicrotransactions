@@ -4,3 +4,9 @@ David Liang (Project Owner)
 Nicholas Cheung (current Scrum Master)
 Kevin Serrano 
 Zachary Olson 
+
+
+EthereumEnergyExchangeDapp contains the website/DAPP for parity usage 
+SmartContract contains the contracts used to be deployed. 
+TestCases are cases used for SmartContract. 
+TestBank.sol is a previous contract used to understand and learn about blockchaining.
