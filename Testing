@@ -18,3 +18,10 @@ The numbers in the list are for testing purpose to see if TokenTransaction
 inherited all of the functions/values from TransactionFactory. The deposit and 
 transferEnergy are for the purpose of seeing if Enits and Ethers could be 
 converted to each other for sales.
+
+
+Under considerations, these test cases are only for the smart contract and not 
+the DAPP file as there's no possible way of getting that to work. The assumption is 
+if the smart contract is giving no errors then the DAPP should work 
+perfectly fine unless the React language has some hidden complication that was not 
+known ahead of time.
