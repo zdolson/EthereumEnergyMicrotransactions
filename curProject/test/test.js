@@ -38,10 +38,10 @@ contract('trans', function(accounts) {
         assert(instance.getBalance("Nick") == 20)
       }).then(function() {
           instance.transferEnergy1("David", "Nick", 5)
-          assert(getBalance("David") == 15)
-          assert(getBalance("Nick") == 15)
-      })
-  })
+          assert(getBalance("David") == 15).log();
+          assert(getBalance("Nick") == 0).log();
+      });
+  });
   it("done YEAH", function async() {
         console.log("yeah, end");
   });
