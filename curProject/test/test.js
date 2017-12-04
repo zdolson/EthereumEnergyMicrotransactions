@@ -7,6 +7,7 @@ contract('trans', function(accounts) {
   });
 });
 
+// Kevin did this test case
 contract('trans', function(accounts) {
     it("testing 4 accounts", function() {
         var action = trans.deployed();
@@ -27,6 +28,7 @@ contract('trans', function(accounts) {
         });
         // action.then(function(instance) { instance.isRegistered("kevin").then(console.log).then(console.log("checked"));});
   });
+// David did this test case
   it("testing exchange here now", function() {
       trans.deployed().then(function(instance) { 
         instance.register(accounts[0], "David")
