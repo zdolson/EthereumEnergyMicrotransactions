@@ -7,7 +7,10 @@ contract('trans', function(accounts) {
   });
 });
 
-// Kevin did this test case
+// Zack Olson 
+// testing module is TransactionFactory 
+// Equivalence classes are the names of the group members and on 
+// whatever or not they are registered as well as if they get values.
 contract('trans', function(accounts) {
     it("testing 4 accounts", function() {
         var action = trans.deployed();
@@ -29,6 +32,9 @@ contract('trans', function(accounts) {
         // action.then(function(instance) { instance.isRegistered("kevin").then(console.log).then(console.log("checked"));});
   });
 // David did this test case
+// module is TokenTransaction
+// in theory, this test case here has all of the equivalence classes 
+// for all of the groupmates.
   it("testing exchange here now", function() {
       trans.deployed().then(function(instance) { 
         instance.register(accounts[0], "David")
