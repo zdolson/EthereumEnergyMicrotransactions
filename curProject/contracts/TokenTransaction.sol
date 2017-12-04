@@ -34,14 +34,7 @@ contract TransactionFactory {
     function getBalance(bytes32 username) public constant returns(uint256) { 
         return (Accounts[username].enitBalance);
     }
-    function setBalance(address _username, uint256 amount, bool flag) public {
-        bytes32 username = getName(_username);
-        if (flag) {
-            Accounts[username].enitBalance += amount;
-        } else { 
-            Accounts[username].enitBalance -= amount;
-        }
-    }
+
     function getAddress(bytes32 username) public constant returns(address) { 
         return (Accounts[username].userAddress) ; 
     }
@@ -68,7 +61,7 @@ contract TransactionFactory {
      * returns: bool
      */ 
     function isRegistered(bytes32 userName) public constant returns(bool registered) {
-        if (Accounts[userName].registered){
+        if (Accounts[userName].registered) {
             return true; 
         } else {
             return false;
@@ -81,10 +74,10 @@ contract TokenTransaction is TransactionFactory {
     address public owner;
     // Log the transfer/action to blockchain 
     event Sold(address buyer, address seller, uint256 enitAmount, uint256 etherAmount);
-    event Brought(address buyer, address seller, uint256 enitAmount, uint256 etherAmount);
+    event Bought(address buyer, address seller, uint256 enitAmount, uint256 etherAmount);
     event Transferred(address _from, address _to, uint256 value);
     event Deposit(address sender, uint256 buyer);
-    event BadAction(address buyer, uint256 amountHave, uint256 amountCost);
+    event BadAction(address buyer, address otherBuyer, uint256 amountCost);
     uint256 ratioEtherToEnits = 3460;
 
     /* Purpose: creates the instance 
@@ -93,6 +86,15 @@ contract TokenTransaction is TransactionFactory {
      */
     function TokenTransaction() TransactionFactory() public {
         owner = msg.sender;
+    }
+
+    function setBalance(address _username, uint256 amount, bool flag) private {
+        bytes32 username = getName(_username);
+        if (flag) {
+            Accounts[username].enitBalance += amount;
+        } else { 
+            Accounts[username].enitBalance -= amount;
+        }
     }
 
     /* Purpose: converts depending on boolean:
@@ -118,56 +120,50 @@ contract TokenTransaction is TransactionFactory {
         setBalance(getAddress(name), value, true);
         Deposit(getAddress(name), value);
     }
+
     /* Purpose: transfers ether to seller and enit to buyer
      * Input: string_seller, uint256_amount 
      * Returns: bool
      */
-    function transferEnergy(bytes32 buyer, bytes32 seller, uint256 amount) payable public returns(bool) {
-        // not enough enits to give out
-        if ( getBalance(seller) < amount) { 
-            return false;
-        }
-        
-        // sending and receiving the enits
-        // deleting seller's energy amount and increasing buyer's amount 
-        setBalance(getAddress(seller), amount, false);
-        depositEnits(buyer, amount);
-
-        //payable function - I want to send ethers to seller from buyers
-        getAddress(seller).transfer(convertToken(false, amount));
-        Transferred(getAddress(buyer), getAddress(seller), amount);
-        return true; 
-    }
+    // function transferEnergy(uint256 amount) payable public returns(bool) {
+    //     (msg.sender).transfer(amount);
+    //     return true; 
+    // }
 
     /* Purpose: exchange money or a handshake here 
                 buyer wants to buy energy from seller
      * Input: seller, buyer, amount 
      * Returns: bool
      */
-    function exchange(bytes32 _buyer, bytes32 _seller, uint amount) public returns(bool) {
-        var seller = getAddress(_seller);
-        var buyer = getAddress(_buyer);
-        uint256 currentCost = convertToken(false, amount);
-        Sold(buyer, seller, amount, currentCost); //give me the event log of this event
+    // function exchange(bytes32 _buyer, bytes32 _seller, uint amount) public returns(bool) {
+    //     var seller = getAddress(_seller);
+    //     var buyer = getAddress(_buyer);
+    //     uint256 currentCost = convertToken(false, amount);  
+    //     if (getBalance(_seller) < amount) { 
+    //         return false ;
+    //     }      
+    //     if (buyer.balance < currentCost) { 
+    //         return false ;
+    //     }
+    //     if (msg.sender != buyer) { 
+    //         return false;
+    //     }
 
-        if ( buyer.balance < currentCost) {
-            BadAction(buyer, buyer.balance, currentCost);
-            return false;
-        }
-        
-        transferEnergy(_buyer, _seller, amount); 
-        Brought(buyer, seller, amount, currentCost);
-        return true;
-    }
 
-    function exchange1(bytes32 _buyer, bytes32 _seller, uint amount) public returns(bool) {
+    //     transferEnergy(currentCost, {from: buyer, to: seller}); 
+    //     Brought(buyer, seller, amount, currentCost);
+    //     Transferred(buyer, seller, currentCost);
+    //     return true;
+    // }
+
+    function exchange1(bytes32 _buyer, bytes32 _seller, uint amount) private returns(bool) {
         var seller = getAddress(_seller);
         var buyer = getAddress(_buyer);
         uint256 currentCost = convertToken(false, amount);
         Sold(buyer, seller, amount, currentCost); //give me the event log of this event
         
         transferEnergy1(_buyer, _seller, amount); 
-        Brought(buyer, seller, amount, currentCost);
+        Bought(buyer, seller, amount, currentCost);
         return true;
     }
     function transferEnergy1(bytes32 buyer, bytes32 seller, uint256 amount) public returns(bool) {
