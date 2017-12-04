@@ -8,7 +8,7 @@ contract('trans', function(accounts) {
 });
 
 contract('trans', function(accounts) {
-    it("testing 4 accounts and create transaction contract", function() {
+    it("testing 4 accounts", function() {
         var action = trans.deployed();
         action.then(function(instance) { 
             instance.register(accounts[0], "David")
@@ -17,22 +17,14 @@ contract('trans', function(accounts) {
             instance.register(accounts[3], "Kevin")            
         }).then(function() { 
             console.log("here");
-
-            //creating a contract here to trade between David and Nick
-            var contractAddr = instance.createTransaction("Testing Contract").then(console.log);
-            let transferEvent = action.Action({}, {fromBlock: 0, toBlock: 'latest'})
-            transferEvent.get((error, logs) => { 
-                logs.forEach(log => console.log(log.args));
-            });
-            // does it exist or the name? 
-            instance.getContract("Testing");
-            var contractInstace = TokenTransaction.new(instance.getContract("Testing"));
-            contractInstance
-
+            instance.depositEnits("David", 10).then(instance.getBalance("David").then(console.log));
+            var balance = instance.getBalance("David").call();
+            console.log(balance);
+            console.log("done");
         });
         // action.then(function(instance) { instance.isRegistered("kevin").then(console.log).then(console.log("checked"));});
   });
   it("done YEAH", function async() {
         console.log("yeah, end");
   });
-});
+});``

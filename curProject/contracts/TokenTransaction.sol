@@ -132,26 +132,26 @@ contract TokenTransaction is TransactionFactory {
      * Input: seller, buyer, amount 
      * Returns: bool
      */
-    function exchange(bytes32 _buyer, bytes32 _seller, uint amount) public returns(bool) {
-        var seller = getAddress(_seller);
-        var buyer = getAddress(_buyer);
-        uint256 currentCost = convertToken(false, amount);  
-        if (getBalance(_seller) < amount) { 
-            return false ;
-        }      
-        if (buyer.balance < currentCost) { 
-            return false ;
-        }
-        if (msg.sender != buyer) { 
-            return false;
-        }
+    // function exchange(bytes32 _buyer, bytes32 _seller, uint amount) public returns(bool) {
+    //     var seller = getAddress(_seller);
+    //     var buyer = getAddress(_buyer);
+    //     uint256 currentCost = convertToken(false, amount);  
+    //     if (getBalance(_seller) < amount) { 
+    //         return false ;
+    //     }      
+    //     if (buyer.balance < currentCost) { 
+    //         return false ;
+    //     }
+    //     if (msg.sender != buyer) { 
+    //         return false;
+    //     }
 
 
-        transferEnergy(currentCost, {from: buyer, to: seller}); 
-        Brought(buyer, seller, amount, currentCost);
-        Transferred(buyer, seller, currentCost);
-        return true;
-    }
+    //     transferEnergy(currentCost, {from: buyer, to: seller}); 
+    //     Brought(buyer, seller, amount, currentCost);
+    //     Transferred(buyer, seller, currentCost);
+    //     return true;
+    // }
 
     function exchange1(bytes32 _buyer, bytes32 _seller, uint amount) public returns(bool) {
         var seller = getAddress(_seller);
