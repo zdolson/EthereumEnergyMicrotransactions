@@ -1,0 +1,14 @@
+::::::::: Definition Of Done :::::::::::
+Completion Criteria:
+  * Code is completed
+    - Code has been committed and pushed
+    - Finished all code for an assigned task
+    - Thoroughly commented
+    - Pushed to master branch
+    - Create a pull request
+  * Peer Reviewed
+    - Another developer reviews Code
+    - Makes sure there's no merge conflicts
+  * QA completed
+    - UI Testing
+    - Feature functionality Testing
