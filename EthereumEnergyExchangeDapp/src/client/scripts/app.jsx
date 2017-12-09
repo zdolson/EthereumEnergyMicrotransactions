@@ -390,7 +390,7 @@ const EEEabi =
 /* Constant Variable: EEEAddress
  * Purpose: Used when creating a contract bonds object.
  */
-const EEEAddress = '0xe7A3a606dc94067Aa811487bBbD96a45411A07e5';
+const EEEAddress = '0xdA8AA13515Fe3DC7CcF53D5c98e0403f2cde8d85';
 
 export class App extends React.Component {
 
